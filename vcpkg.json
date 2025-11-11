@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "asio",
+    "glew",
+    "libogg",
+    "libtheora",
+    "libvorbis",
+    "sdl2",
+    "tinyxml2",
+    "stb"
+  ]
+}

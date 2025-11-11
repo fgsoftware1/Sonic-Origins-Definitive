@@ -1,0 +1,47 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main", "gitauto/*", "copilot/*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Apply Team Forever enhancements
+      run: |
+        chmod +x apply_teamforever.sh
+        ./apply_teamforever.sh
+      continue-on-error: false
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo bash scripts/deps.sh
+        sudo apt-get install -y cmake build-essential pkg-config libsdl2-dev libgl1-mesa-dev libglew-dev libvorbis-dev libtinyxml2-dev libtheora-dev
+
+    - name: Build project
+      run: |
+        chmod +x build_all.sh
+        ./build_all.sh
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: sonic-hybrid-ultimate
+        path: |
+          Hybrid-RSDK-Main/build/bin/
+          Custom-Client/bin/
